@@ -1,13 +1,13 @@
-import {TemporaryUser} from "../interfaces/Interfaces";
+import {TemporaryCustomerDTO} from "../interfaces/Interfaces";
 
 const keySession: string = "temporary user";
 
-export const getTemporaryUserInfo = (): TemporaryUser | null => {
+export const getTemporaryUserInfo = (): TemporaryCustomerDTO | null => {
     const temporaryUser: string | null = sessionStorage.getItem(keySession);
     return temporaryUser && JSON.parse(temporaryUser);
 }
 
-export const setTemporaryUserInfo = (temporaryUser: TemporaryUser): void => {
+export const setTemporaryUserInfo = (temporaryUser: TemporaryCustomerDTO): void => {
     sessionStorage.setItem(keySession, JSON.stringify(temporaryUser));
 }
 

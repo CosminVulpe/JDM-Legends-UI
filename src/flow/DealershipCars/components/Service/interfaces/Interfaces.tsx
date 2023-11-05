@@ -29,7 +29,7 @@ export interface HistoryBid {
     checkInformationStoredTemporarily?: boolean,
 }
 
-export interface TemporaryUser {
+export interface TemporaryCustomerDTO {
     id?: number,
     fullName: string,
     userName: string,
@@ -38,9 +38,9 @@ export interface TemporaryUser {
     checkInformationStoredTemporarily?: boolean
 }
 
-export interface HistoryBidTemporaryUser {
+export interface HistoryBidTemporaryCustomerRequest {
     historyBid: HistoryBid,
-    temporaryUser: TemporaryUser
+    temporaryCustomerDTO: TemporaryCustomerDTO
 }
 
 export interface WinnerUser {
