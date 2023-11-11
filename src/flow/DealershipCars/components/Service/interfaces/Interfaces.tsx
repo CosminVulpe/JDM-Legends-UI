@@ -39,7 +39,7 @@ export interface TemporaryCustomerRequest {
 }
 
 export interface HistoryBidTemporaryCustomerRequest {
-    historyBid: HistoryBid,
+    historyBidRequest: HistoryBid,
     temporaryCustomerRequest: TemporaryCustomerRequest
 }
 

@@ -95,7 +95,7 @@ const PopUp: React.FC<Props> = (props) => {
         setTemporaryUserInfo(temporaryUser);
 
         ApiPostHistoryBid("bid/" + id, {
-            historyBid: historyBid,
+            historyBidRequest: historyBid,
             temporaryCustomerRequest: temporaryUser
         })
             .then((response: any) => {
