@@ -22,7 +22,7 @@ import {
     Checkbox
 } from "@chakra-ui/react";
 import {ApiGetCar, ApiGetTemporaryUser, ApiPostHistoryBid} from "../Service/api-requests/ApiRequests";
-import {Car, HistoryBid, TemporaryCustomerDTO} from "../Service/interfaces/Interfaces";
+import {Car, HistoryBid, TemporaryCustomerRequest} from "../Service/interfaces/Interfaces";
 import {successfulNotification, warningNotification} from "../Service/toastify-notification/ToastifyNotification";
 import {ToastContainer} from "react-toastify";
 import {useFormik} from "formik";
@@ -60,7 +60,7 @@ const PopUp: React.FC<Props> = (props) => {
         "YesButton": false,
         "NoButton": false
     });
-    const [tempUsers, setTempUsers] = useState<TemporaryCustomerDTO[]>([]);
+    const [tempUsers, setTempUsers] = useState<TemporaryCustomerRequest[]>([]);
 
     const formik = useFormik({
         initialValues: {
@@ -86,7 +86,7 @@ const PopUp: React.FC<Props> = (props) => {
     const handleOnClick = (): void => {
         onClose();
 
-        const temporaryUser: TemporaryCustomerDTO = {
+        const temporaryUser: TemporaryCustomerRequest = {
             fullName: formik.values.firstName.concat(" ").concat(formik.values.lastName),
             userName: formik.values.userName,
             emailAddress: formik.values.emailAddress,
@@ -96,7 +96,7 @@ const PopUp: React.FC<Props> = (props) => {
 
         ApiPostHistoryBid("bid/" + id, {
             historyBid: historyBid,
-            temporaryCustomerDTO: temporaryUser
+            temporaryCustomerRequest: temporaryUser
         })
             .then((response: any) => {
                 if (response.status === 200 || response.status === 201) {
