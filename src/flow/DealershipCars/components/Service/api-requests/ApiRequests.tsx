@@ -29,7 +29,6 @@ export const ApiGetReview = async (endPoint?: string) =>
 
 
 export const ApiPostHistoryBid = async (endPoint: string, data: HistoryBidTemporaryCustomerRequest) => {
-    console.log(data)
     return await axios.post(process.env.REACT_APP_BACKEND_API_HISTORY_BID + endPoint
         , JSON.stringify({
             ...data,
