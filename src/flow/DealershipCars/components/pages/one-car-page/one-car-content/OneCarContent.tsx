@@ -70,7 +70,6 @@ const OneCarContent: React.FC<Props> = ({cars}) => {
             + startDate.getDate()
         )
     );
-    console.log(daysDifference)
 
     const computeTimeDiff = (): number => {
         const diffTime: number = Math.abs(endDate.getTime() - startDate.getTime());
