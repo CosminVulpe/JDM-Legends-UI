@@ -61,6 +61,7 @@ const PopUp: React.FC<Props> = (props) => {
         "NoButton": false
     });
     const [tempUsers, setTempUsers] = useState<TemporaryCustomerRequest[]>([]);
+    const [doesUsernameAlreadyExist, setDoesUsernameAlreadyExist] = useState<boolean>(false);
 
     const formik = useFormik({
         initialValues: {
@@ -79,13 +80,16 @@ const PopUp: React.FC<Props> = (props) => {
             .catch(err => console.error(err))
     }, [id, setHistoryBidList]);
 
+    useEffect(() => {
+        setDoesUsernameAlreadyExist(tempUsers.map(item => item.userName).includes(formik.values.userName))
+    }, [tempUsers, formik.values.userName]);
+
     const formatBidValue = (val: BigInt): string => `$` + val;
 
     const parseValue = (val: string): BigInt => BigInt(val.replace(/^\$/, ""));
 
     const handleOnClick = (): void => {
         onClose();
-
         const temporaryUser: TemporaryCustomerRequest = {
             fullName: formik.values.firstName.concat(" ").concat(formik.values.lastName),
             userName: formik.values.userName,
@@ -108,13 +112,25 @@ const PopUp: React.FC<Props> = (props) => {
             })
             .catch(err => console.error(err));
 
-        setCheckedCheckBox({YesButton: false, NoButton: false});
+        resetCheckedBoxes();
+        resetHistoryBid();
+    }
+
+    const handleOnClose = () => {
+        formik.resetForm();
+        resetCheckedBoxes();
+        resetHistoryBid();
+        onClose();
+    }
+
+    const resetCheckedBoxes = () => setCheckedCheckBox({YesButton: false, NoButton: false})
+
+    const resetHistoryBid = () =>
         setHistoryBid(prevState => ({
             ...prevState,
             bidValue: BigInt(0),
             timeOfTheBid: new Date()
-        }));
-    }
+        }))
 
     const handleOnChange = (valueStr: string): void => {
         setHistoryBid(prevState => ({
@@ -142,7 +158,6 @@ const PopUp: React.FC<Props> = (props) => {
     }
 
     const isInputValid = (text: string): boolean => !(REGEX_VALIDATE_NAME.test(text));
-    const doesUsernameAlreadyExist: boolean = tempUsers.map(item => item.userName).includes(formik.values.userName);
     const isPriceLowerThanCarPrice: boolean = historyBid.bidValue < BigInt(car.initialPrice);
 
     return (
@@ -284,7 +299,7 @@ const PopUp: React.FC<Props> = (props) => {
                                 Submit
                             </Button>
                             <Button variant='solid'
-                                    onClick={onClose}>
+                                    onClick={handleOnClose}>
                                 Close
                             </Button>
                         </ModalFooter>

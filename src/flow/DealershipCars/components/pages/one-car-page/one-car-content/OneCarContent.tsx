@@ -7,8 +7,6 @@ import CountdownTimer from "../../../CountdownTimer/CountdownTimer";
 import "../../../CountdownTimer/CountdownTimerStyle.css";
 import {ApiGetCar} from "../../../Service/api-requests/ApiRequests";
 import {differenceInDays} from "date-fns";
-import {log} from "node:util";
-import {da} from "date-fns/locale";
 
 interface Props {
     cars?: Car;
