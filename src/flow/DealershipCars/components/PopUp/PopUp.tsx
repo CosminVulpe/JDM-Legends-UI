@@ -114,6 +114,7 @@ const PopUp: React.FC<Props> = (props) => {
 
         resetCheckedBoxes();
         resetHistoryBid();
+        formik.resetForm();
     }
 
     const handleOnClose = () => {
@@ -159,7 +160,7 @@ const PopUp: React.FC<Props> = (props) => {
 
     const isInputValid = (text: string): boolean => !(REGEX_VALIDATE_NAME.test(text));
     const isPriceLowerThanCarPrice: boolean = historyBid.bidValue < BigInt(car.initialPrice);
-
+    console.log(formik.values.userName)
     return (
         <>
             <ToastContainer/>
