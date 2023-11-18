@@ -7,6 +7,8 @@ import CountdownTimer from "../../../CountdownTimer/CountdownTimer";
 import "../../../CountdownTimer/CountdownTimerStyle.css";
 import {ApiGetCar} from "../../../Service/api-requests/ApiRequests";
 import {differenceInDays} from "date-fns";
+import {log} from "node:util";
+import {da} from "date-fns/locale";
 
 interface Props {
     cars?: Car;
@@ -36,11 +38,18 @@ const OneCarContent: React.FC<Props> = ({cars}) => {
         return value[0].toUpperCase() + value.substring(1).toLowerCase();
     }
 
+    const getDate = (array: number[]): Date => {
+        const [year, month, day, hours, minutes, seconds, milliseconds] = array;
+        const currentDate = new Date(year, month, day, hours, minutes, seconds);
+        currentDate.setMilliseconds(milliseconds);
+        return currentDate;
+    }
+
     useEffect(() => {
         ApiGetCar("dates/" + cars?.id)
             .then(res => {
-                setStartDate(new Date(res.data[0]));
-                setEndDate(new Date(res.data[1]));
+                setStartDate(getDate(res.data[0]));
+                setEndDate(getDate(res.data[1]));
             })
             .catch(err => console.log(err));
     }, [cars?.id]);
@@ -61,6 +70,7 @@ const OneCarContent: React.FC<Props> = ({cars}) => {
             + startDate.getDate()
         )
     );
+    console.log(daysDifference)
 
     const computeTimeDiff = (): number => {
         const diffTime: number = Math.abs(endDate.getTime() - startDate.getTime());
@@ -118,7 +128,7 @@ const OneCarContent: React.FC<Props> = ({cars}) => {
                             <div style={{marginBottom: "30px"}}>
                                 <Heading as='h3' size='lg'>OE equipment</Heading>
                                 <ul className='details_paragraph_list'>
-                                    {[...Array(5)].map( (index) =>
+                                    {[...Array(5)].map((index) =>
                                         <li key={index}>16 inch alloy rims</li>
                                     )}
                                 </ul>
