@@ -22,12 +22,12 @@ import {
     Checkbox
 } from "@chakra-ui/react";
 import {ApiGetCar, ApiGetTemporaryUser, ApiPostHistoryBid} from "../Service/api-requests/ApiRequests";
-import {Car, HistoryBid, TemporaryUser} from "../Service/interfaces/Interfaces";
+import {Car, HistoryBid, TemporaryCustomerRequest} from "../Service/interfaces/Interfaces";
 import {successfulNotification, warningNotification} from "../Service/toastify-notification/ToastifyNotification";
 import {ToastContainer} from "react-toastify";
 import {useFormik} from "formik";
 import AlertNotification from "../AlertNotification/AlerNotification";
-import {isTempUserActive, setTemporaryUserInfo} from "../Service/session-storage/SessionStorage";
+import {getTemporaryUserInfo, isTempUserActive, setTemporaryUserInfo} from "../Service/session-storage/SessionStorage";
 
 interface Props {
     id: number,
@@ -60,7 +60,8 @@ const PopUp: React.FC<Props> = (props) => {
         "YesButton": false,
         "NoButton": false
     });
-    const [tempUsers, setTempUsers] = useState<TemporaryUser[]>([]);
+    const [tempUsers, setTempUsers] = useState<TemporaryCustomerRequest[]>([]);
+    const [doesUsernameAlreadyExist, setDoesUsernameAlreadyExist] = useState<boolean>(false);
 
     const formik = useFormik({
         initialValues: {
@@ -79,6 +80,10 @@ const PopUp: React.FC<Props> = (props) => {
             .catch(err => console.error(err))
     }, [id, setHistoryBidList]);
 
+    useEffect(() => {
+        setDoesUsernameAlreadyExist(tempUsers.map(item => item.userName).includes(formik.values.userName))
+    }, [tempUsers, formik.values.userName]);
+
     const formatBidValue = (val: BigInt): string => `$` + val;
 
     const parseValue = (val: string): BigInt => BigInt(val.replace(/^\$/, ""));
@@ -86,17 +91,22 @@ const PopUp: React.FC<Props> = (props) => {
     const handleOnClick = (): void => {
         onClose();
 
-        const temporaryUser: TemporaryUser = {
-            fullName: formik.values.firstName.concat(" ").concat(formik.values.lastName),
-            userName: formik.values.userName,
-            emailAddress: formik.values.emailAddress,
-            checkInformationStoredTemporarily: isTempUserActive ? checkedCheckBox["YesButton"] : true
-        };
-        setTemporaryUserInfo(temporaryUser);
+        let temporaryUser;
+        if (isTempUserActive){
+             temporaryUser = {
+                fullName: formik.values.firstName.concat(" ").concat(formik.values.lastName),
+                userName: formik.values.userName,
+                emailAddress: formik.values.emailAddress,
+                checkInformationStoredTemporarily: isTempUserActive ? checkedCheckBox["YesButton"] : true
+            };
+            setTemporaryUserInfo(temporaryUser);
+        } else {
+            temporaryUser = getTemporaryUserInfo();
+        }
 
         ApiPostHistoryBid("bid/" + id, {
-            historyBid: historyBid,
-            temporaryUser: temporaryUser
+            historyBidRequest: historyBid,
+            temporaryCustomerRequest: temporaryUser as TemporaryCustomerRequest
         })
             .then((response: any) => {
                 if (response.status === 200 || response.status === 201) {
@@ -108,13 +118,26 @@ const PopUp: React.FC<Props> = (props) => {
             })
             .catch(err => console.error(err));
 
-        setCheckedCheckBox({YesButton: false, NoButton: false});
+        resetCheckedBoxes();
+        resetHistoryBid();
+        formik.resetForm();
+    }
+
+    const handleOnClose = () => {
+        formik.resetForm();
+        resetCheckedBoxes();
+        resetHistoryBid();
+        onClose();
+    }
+
+    const resetCheckedBoxes = () => setCheckedCheckBox({YesButton: false, NoButton: false})
+
+    const resetHistoryBid = () =>
         setHistoryBid(prevState => ({
             ...prevState,
             bidValue: BigInt(0),
             timeOfTheBid: new Date()
-        }));
-    }
+        }))
 
     const handleOnChange = (valueStr: string): void => {
         setHistoryBid(prevState => ({
@@ -142,7 +165,6 @@ const PopUp: React.FC<Props> = (props) => {
     }
 
     const isInputValid = (text: string): boolean => !(REGEX_VALIDATE_NAME.test(text));
-    const doesUsernameAlreadyExist: boolean = tempUsers.map(item => item.userName).includes(formik.values.userName);
     const isPriceLowerThanCarPrice: boolean = historyBid.bidValue < BigInt(car.initialPrice);
 
     return (
@@ -284,7 +306,7 @@ const PopUp: React.FC<Props> = (props) => {
                                 Submit
                             </Button>
                             <Button variant='solid'
-                                    onClick={onClose}>
+                                    onClick={handleOnClose}>
                                 Close
                             </Button>
                         </ModalFooter>

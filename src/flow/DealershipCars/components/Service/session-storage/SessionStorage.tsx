@@ -1,13 +1,13 @@
-import {TemporaryUser} from "../interfaces/Interfaces";
+import {TemporaryCustomerRequest} from "../interfaces/Interfaces";
 
 const keySession: string = "temporary user";
 
-export const getTemporaryUserInfo = (): TemporaryUser | null => {
+export const getTemporaryUserInfo = (): TemporaryCustomerRequest | null => {
     const temporaryUser: string | null = sessionStorage.getItem(keySession);
     return temporaryUser && JSON.parse(temporaryUser);
 }
 
-export const setTemporaryUserInfo = (temporaryUser: TemporaryUser): void => {
+export const setTemporaryUserInfo = (temporaryUser: TemporaryCustomerRequest): void => {
     sessionStorage.setItem(keySession, JSON.stringify(temporaryUser));
 }
 
@@ -16,4 +16,4 @@ export const clearSessionStorage = (): void => {
     sessionStorage.clear();
 }
 
-export const isTempUserActive: boolean = getTemporaryUserInfo() == null;
+export const isTempUserActive: boolean = getTemporaryUserInfo() === null;
