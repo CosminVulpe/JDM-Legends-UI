@@ -27,7 +27,7 @@ import {successfulNotification, warningNotification} from "../Service/toastify-n
 import {ToastContainer} from "react-toastify";
 import {useFormik} from "formik";
 import AlertNotification from "../AlertNotification/AlerNotification";
-import {isTempUserActive, setTemporaryUserInfo} from "../Service/session-storage/SessionStorage";
+import {getTemporaryUserInfo, isTempUserActive, setTemporaryUserInfo} from "../Service/session-storage/SessionStorage";
 
 interface Props {
     id: number,
@@ -90,17 +90,23 @@ const PopUp: React.FC<Props> = (props) => {
 
     const handleOnClick = (): void => {
         onClose();
-        const temporaryUser: TemporaryCustomerRequest = {
-            fullName: formik.values.firstName.concat(" ").concat(formik.values.lastName),
-            userName: formik.values.userName,
-            emailAddress: formik.values.emailAddress,
-            checkInformationStoredTemporarily: isTempUserActive ? checkedCheckBox["YesButton"] : true
-        };
-        setTemporaryUserInfo(temporaryUser);
+
+        let temporaryUser;
+        if (isTempUserActive){
+             temporaryUser = {
+                fullName: formik.values.firstName.concat(" ").concat(formik.values.lastName),
+                userName: formik.values.userName,
+                emailAddress: formik.values.emailAddress,
+                checkInformationStoredTemporarily: isTempUserActive ? checkedCheckBox["YesButton"] : true
+            };
+            setTemporaryUserInfo(temporaryUser);
+        } else {
+            temporaryUser = getTemporaryUserInfo();
+        }
 
         ApiPostHistoryBid("bid/" + id, {
             historyBidRequest: historyBid,
-            temporaryCustomerRequest: temporaryUser
+            temporaryCustomerRequest: temporaryUser as TemporaryCustomerRequest
         })
             .then((response: any) => {
                 if (response.status === 200 || response.status === 201) {

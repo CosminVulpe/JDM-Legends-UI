@@ -16,4 +16,4 @@ export const clearSessionStorage = (): void => {
     sessionStorage.clear();
 }
 
-export const isTempUserActive: boolean = getTemporaryUserInfo() == null;
+export const isTempUserActive: boolean = getTemporaryUserInfo() === null;
