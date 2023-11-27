@@ -24,7 +24,7 @@ const Testimonials: React.FC<IProps> = ({reviews}) => {
                     spacing={{base: 10, md: 4, lg: 10}}>
                     {reviews?.length !== 0 && reviews !== null ?
                         reviews.map((review, index) =>
-                            <Testimonial key={review.id}>
+                            <Testimonial key={index}>
                                 <TestimonialContent>
                                     <TestimonialHeading>{review.title}</TestimonialHeading>
                                     <TestimonialText>
