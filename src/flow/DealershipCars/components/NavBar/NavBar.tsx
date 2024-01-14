@@ -140,7 +140,7 @@ const NavBar: React.FC = () => {
                 <NavMenuLinks to="/review" primary={false}>Review</NavMenuLinks>
             </NavMenu>
             <NavBtn>
-                <ButtonNavBar to="/login" primary={true}>Login</ButtonNavBar>
+                <ButtonNavBar to="/register" primary={true}>Register</ButtonNavBar>
                 <ButtonNavBar to="/contact-us" primary={true}>Contact Us</ButtonNavBar>
             </NavBtn>
         </Nav>

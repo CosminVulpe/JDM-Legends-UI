@@ -8,6 +8,7 @@ import {ChakraProvider} from '@chakra-ui/react';
 import AllCars from "./flow/DealershipCars/components/pages/all-cars-page/AllCars";
 import OneCar from "./flow/DealershipCars/components/pages/one-car-page/OneCar";
 import Review from "./flow/DealershipCars/components/pages/review-page/Review";
+import Authentication from "./flow/DealershipCars/components/AuthenticationPage/Authentication";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -21,6 +22,7 @@ root.render(
                     <Route path="/all-cars" element={<AllCars/>}/>
                     <Route path="/review" element={<Review/>}/>
                     <Route path="/car/:id" element={<OneCar/>}/>
+                    <Route path="/register" element={<Authentication/>}/>
                 </Routes>
             </ChakraProvider>
         </Router>
