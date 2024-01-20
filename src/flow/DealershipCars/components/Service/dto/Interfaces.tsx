@@ -47,3 +47,11 @@ export interface WinnerUser {
     userName?: string,
     bidValue?: BigInt
 }
+
+export interface Customer {
+    fullName: string,
+    userName: string,
+    emailAddress: string,
+    pwd: string,
+    phoneNumber:string
+}

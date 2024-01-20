@@ -1,5 +1,10 @@
 import axios from "axios";
-import {HistoryBidTemporaryCustomerRequest, ReviewInterface, TemporaryCustomerRequest} from "../dto/Interfaces";
+import {
+    Customer,
+    HistoryBidTemporaryCustomerRequest,
+    ReviewInterface,
+    TemporaryCustomerRequest
+} from "../dto/Interfaces";
 
 export const ApiGetCar = async (endPoint?: string) =>
     await axios.get(process.env.REACT_APP_BACKEND_API_CAR + (endPoint || ""));
@@ -45,8 +50,8 @@ export const ApiPostHistoryBid = async (endPoint: string, data: HistoryBidTempor
         });
 }
 
-export const ApiPostTemporaryUser = async (data: TemporaryCustomerRequest | string, endPoint?: string,) => {
-    return await axios.post(process.env.REACT_APP_USERS_BACKEND_API_USERS + (endPoint || "")
+export const ApiPostRegisterCustomer = async (data: Customer | string, endPoint?: string,) => {
+    return await axios.post(process.env.REACT_APP_USERS_BACKEND_API_REGISTER + (endPoint || "")
         , JSON.stringify(data)
         , {
             headers: {
