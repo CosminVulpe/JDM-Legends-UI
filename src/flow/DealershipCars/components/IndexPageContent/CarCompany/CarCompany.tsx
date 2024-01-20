@@ -4,7 +4,7 @@ import {Heading} from "@chakra-ui/react";
 import {ApiGetCar, getCancelToken} from "../../Service/api-requests/ApiRequests";
 import axios from "axios";
 import {carBrandData} from "./CarBrandData";
-import {Car} from "../../Service/interfaces/Interfaces";
+import {Car} from "../../Service/dto/Interfaces";
 
 const CarCompany: React.FC = () => {
     window.scrollTo(0, 0);

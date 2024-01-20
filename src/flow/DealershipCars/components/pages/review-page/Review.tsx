@@ -7,7 +7,7 @@ import {ApiPostReview} from "../../Service/api-requests/ApiRequests";
 import {successfulNotification} from "../../Service/toastify-notification/ToastifyNotification";
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import {ReviewInterface} from "../../Service/interfaces/Interfaces";
+import {ReviewInterface} from "../../Service/dto/Interfaces";
 import * as Yup from "yup";
 import {useFormik} from "formik";
 

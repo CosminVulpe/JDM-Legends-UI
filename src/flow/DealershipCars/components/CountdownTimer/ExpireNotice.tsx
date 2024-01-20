@@ -1,5 +1,5 @@
 import React from "react";
-import {WinnerUser} from "../Service/interfaces/Interfaces";
+import {WinnerUser} from "../Service/dto/Interfaces";
 
 const ExpireNotice: React.FC<WinnerUser> = ({userName, bidValue}) => {
 

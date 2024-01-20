@@ -1,4 +1,4 @@
-import {TemporaryCustomerRequest} from "../interfaces/Interfaces";
+import {TemporaryCustomerRequest} from "../dto/Interfaces";
 
 const keySession: string = "temporary user";
 

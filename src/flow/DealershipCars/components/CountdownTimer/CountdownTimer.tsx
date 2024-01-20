@@ -3,7 +3,7 @@ import {useCountDown} from "./useCountdown";
 import ExpireNotice from "./ExpireNotice";
 import ShowCounter from "./ShowCounter";
 import {ApiGetTemporaryUser} from "../Service/api-requests/ApiRequests";
-import {WinnerUser} from "../Service/interfaces/Interfaces";
+import {WinnerUser} from "../Service/dto/Interfaces";
 
 interface Props {
     targetDate: number,

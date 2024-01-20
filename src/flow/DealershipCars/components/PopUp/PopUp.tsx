@@ -22,7 +22,7 @@ import {
     Checkbox
 } from "@chakra-ui/react";
 import {ApiGetCar, ApiGetTemporaryUser, ApiPostHistoryBid} from "../Service/api-requests/ApiRequests";
-import {Car, HistoryBid, TemporaryCustomerRequest} from "../Service/interfaces/Interfaces";
+import {Car, HistoryBid, TemporaryCustomerRequest} from "../Service/dto/Interfaces";
 import {successfulNotification, warningNotification} from "../Service/toastify-notification/ToastifyNotification";
 import {ToastContainer} from "react-toastify";
 import {useFormik} from "formik";
