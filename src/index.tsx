@@ -9,6 +9,7 @@ import AllCars from "./flow/DealershipCars/components/pages/all-cars-page/AllCar
 import OneCar from "./flow/DealershipCars/components/pages/one-car-page/OneCar";
 import Review from "./flow/DealershipCars/components/pages/review-page/Review";
 import Authentication from "./flow/DealershipCars/components/pages/authentication-page/Authentication";
+import SignIn from "./flow/DealershipCars/components/pages/sign-page/SignIn";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -23,6 +24,7 @@ root.render(
                     <Route path="/review" element={<Review/>}/>
                     <Route path="/car/:id" element={<OneCar/>}/>
                     <Route path="/register" element={<Authentication/>}/>
+                    <Route path="/sign" element={<SignIn/>}/>
                 </Routes>
             </ChakraProvider>
         </Router>

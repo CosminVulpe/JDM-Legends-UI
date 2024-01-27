@@ -49,9 +49,9 @@ export interface WinnerUser {
 }
 
 export interface Customer {
-    fullName: string,
-    userName: string,
+    fullName?: string,
+    userName?: string,
     emailAddress: string,
     pwd: string,
-    phoneNumber:string
+    phoneNumber?:string
 }

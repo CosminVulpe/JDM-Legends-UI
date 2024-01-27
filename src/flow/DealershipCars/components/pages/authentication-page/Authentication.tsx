@@ -150,7 +150,7 @@ const Authentication: React.FC = () => {
                                 </Button>
                             </Stack>
                             <Stack pt={6}>
-                                <Text align={'center'}>
+                                <Text align={'center'} onClick={() => navigate("/sign")}>
                                     Already a user? <Link color={'blue.400'}>Login</Link>
                                 </Text>
 

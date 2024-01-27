@@ -65,3 +65,26 @@ export const ApiPostRegisterCustomer = async (data: Customer | string, endPoint?
 export const ApiGetTemporaryUser = async (endPoint?: string) =>
     await axios.get(process.env.REACT_APP_USERS_BACKEND_API_USERS + (endPoint || ""));
 
+
+export const ApiPostSignCustomer = async (data: { emailAddress: string, pwd: string }, endPoint?: string,) => {
+
+    return await axios.post(process.env.REACT_APP_USERS_BACKEND_API_SIGN + (endPoint || "")
+        , JSON.stringify(data)
+        , {
+            headers: {
+                "Content-Type": "application/json",
+                "accept": "application/json",
+                "Authorization": "Basic " + btoa(data.emailAddress + ":" + data.pwd)
+            }
+        }
+    );
+}
+
+export const ApiGetSignedCustomerName = async (data: { emailAddress: string, pwd: string }, endPoint?: string) =>
+    await axios.get(process.env.REACT_APP_USERS_BACKEND_API_SIGN + (endPoint || "")
+        , {
+            headers: {
+                'Authorization': 'Basic ' + btoa(data.emailAddress + ':' + data.pwd)
+            }
+        }
+    );
