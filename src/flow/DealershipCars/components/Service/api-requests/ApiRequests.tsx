@@ -2,8 +2,7 @@ import axios from "axios";
 import {
     Customer,
     HistoryBidTemporaryCustomerRequest,
-    ReviewInterface,
-    TemporaryCustomerRequest
+    ReviewInterface
 } from "../dto/Interfaces";
 
 export const ApiGetCar = async (endPoint?: string) =>
