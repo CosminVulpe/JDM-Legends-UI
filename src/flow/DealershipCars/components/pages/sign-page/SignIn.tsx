@@ -14,7 +14,7 @@ import {
     useColorModeValue,
 } from '@chakra-ui/react'
 import {Customer} from "../../Service/dto/Interfaces";
-import {ApiGetSignedCustomerName, ApiPostSignCustomer} from "../../Service/api-requests/ApiRequests";
+import {ApiGetSignedCustomerName} from "../../Service/api-requests/ApiRequests";
 import {successfulNotification, warningNotification} from "../../Service/toastify-notification/ToastifyNotification";
 
 const SignIn: React.FC = () => {
