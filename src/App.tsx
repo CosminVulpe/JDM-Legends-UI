@@ -7,9 +7,9 @@ import {ApiGetReview, getCancelToken} from "./flow/DealershipCars/components/Ser
 import axios from "axios";
 import {ReviewInterface} from "./flow/DealershipCars/components/Service/dto/Interfaces";
 
-const App: React.FC = () => {
+const App: React.FC<{ userNameLogged?: string }> = ({userNameLogged}) => {
 
-    const[topThreeReviews, setTopThreeReviews] = useState<ReviewInterface[]>([]);
+    const [topThreeReviews, setTopThreeReviews] = useState<ReviewInterface[]>([]);
 
     useEffect(() => {
         ApiGetReview()
@@ -33,9 +33,9 @@ const App: React.FC = () => {
     return (
         <>
             <GlobalStyle/>
-            <NavBar/>
+            <NavBar userName={userNameLogged}/>
             <GifAnimation indexPageVideo={true}/>
-            <ContentIndex  reviews={topThreeReviews}/>
+            <ContentIndex reviews={topThreeReviews}/>
         </>
     );
 }

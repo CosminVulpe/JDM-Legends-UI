@@ -2,6 +2,7 @@ import React from "react";
 import styled, {css} from "styled-components/macro";
 import {Link} from 'react-router-dom';
 import {Heading} from '@chakra-ui/react'
+import {getJwtToken} from "../Service/session-storage/SessionStorage";
 
 const Nav = styled.nav`
   height: 80px;
@@ -54,7 +55,7 @@ const NavLink = css`
 
   &:hover {
     cursor: pointer;
-    color: ${ ( { primary }: { primary: boolean } ) => (primary ? "#4CA8EE" : "#ed2f2f")};
+    color: ${({primary}: { primary: boolean }) => (primary ? "#4CA8EE" : "#ed2f2f")};
 
     &:after {
       left: -10%;
@@ -125,7 +126,7 @@ const ButtonNavBar = styled(Link)`
   ${NavLink};
 `;
 
-const NavBar: React.FC = () => {
+const NavBar: React.FC<{ userName?: string }> = ({userName}) => {
     return (
         <Nav>
             <Logo to="/">
@@ -140,8 +141,19 @@ const NavBar: React.FC = () => {
                 <NavMenuLinks to="/review" primary={false}>Review</NavMenuLinks>
             </NavMenu>
             <NavBtn>
-                <ButtonNavBar to="/register" primary={true}>Register</ButtonNavBar>
-                <ButtonNavBar to="/contact-us" primary={true}>Contact Us</ButtonNavBar>
+                {getJwtToken() === null ?
+                    <>
+                        <ButtonNavBar to="/register" primary={true}>Register</ButtonNavBar>
+                        <ButtonNavBar to="/contact-us" primary={true}>Contact Us</ButtonNavBar>
+                    </>
+                    :
+                    <>
+                        <ButtonNavBar to="#" primary={true}>Welcome {userName} !
+                        </ButtonNavBar>
+                        <ButtonNavBar to="#" primary={true}>View Profile</ButtonNavBar>
+                    </>
+                }
+
             </NavBtn>
         </Nav>
     );

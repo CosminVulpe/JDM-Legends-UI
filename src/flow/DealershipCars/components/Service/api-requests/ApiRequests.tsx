@@ -61,7 +61,6 @@ export const ApiPostRegisterCustomer = async (data: Customer | string, endPoint?
     );
 }
 
-
 export const ApiGetTemporaryUser = async (endPoint?: string) =>
     await axios.get(process.env.REACT_APP_USERS_BACKEND_API_USERS + (endPoint || ""));
 

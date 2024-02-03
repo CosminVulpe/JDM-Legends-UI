@@ -16,12 +16,17 @@ import {
 import {Customer} from "../../Service/dto/Interfaces";
 import {ApiGetSignedCustomerName} from "../../Service/api-requests/ApiRequests";
 import {successfulNotification, warningNotification} from "../../Service/toastify-notification/ToastifyNotification";
+import {ToastContainer} from "react-toastify";
+import {setJwtToken} from "../../Service/session-storage/SessionStorage";
+import App from "../../../../../App";
 
 const SignIn: React.FC = () => {
+
     const [customerInfo, setCustomerInfo] = useState<Customer>({
         emailAddress: "",
         pwd: "",
     });
+    const [userNameLogged, setUsernameLogged] = useState<string>("");
 
     const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCustomerInfo(prevState => ({
@@ -32,14 +37,32 @@ const SignIn: React.FC = () => {
 
     const signIn = () => {
         ApiGetSignedCustomerName(customerInfo)
-            .then((res:any) => {
-                successfulNotification("Sign in successful");
+            .then((res) => {
+                if (res.status === 200) {
+                    setUsernameLogged(res.data);
+                    setJwtToken(res.headers["authorization"]);
+                    successfulNotification("Sign in successful");
+                }
             })
-            .catch(() => warningNotification("Bad credentials"));
+            .catch((err) => {
+                switch (err.response.status) {
+                    case 401:
+                        warningNotification("Bad Credentials");
+                        break;
+                    case 403:
+                        warningNotification("Unauthorized");
+                        break;
+                    default:
+                        warningNotification("Error occurred!");
+                }
+
+            });
     }
 
     return (
         <>
+            {userNameLogged !== "" && <App userNameLogged={userNameLogged}/>}
+            <ToastContainer/>
             <Flex
                 minH={'100vh'}
                 align={'center'}
