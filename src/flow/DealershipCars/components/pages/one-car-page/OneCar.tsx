@@ -9,7 +9,7 @@ import {Heading} from "@chakra-ui/react";
 import "./OneCarStyle.css";
 import OneCarContent from "./one-car-content/OneCarContent";
 import Footer from "../../Footer/Footer";
-import {Car} from "../../Service/interfaces/Interfaces";
+import {Car} from "../../Service/dto/Interfaces";
 
 const slideStyles = {
     width: "100%",

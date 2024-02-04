@@ -3,7 +3,7 @@ import {BiSearchAlt} from "react-icons/bi";
 import {AiOutlineCloseCircle} from "react-icons/ai";
 import "./SearchBarStyle.css";
 import {useNavigate} from "react-router-dom";
-import {Car} from "../Service/interfaces/Interfaces";
+import {Car} from "../Service/dto/Interfaces";
 
 interface IProps {
     cars: Car[]

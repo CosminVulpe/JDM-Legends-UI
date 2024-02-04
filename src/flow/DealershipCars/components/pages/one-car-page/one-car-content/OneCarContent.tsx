@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Heading} from "@chakra-ui/react";
 import './OneCarContent.css';
 import PopUp from "../../../PopUp/PopUp";
-import {Car, HistoryBid, WinnerUser} from "../../../Service/interfaces/Interfaces";
+import {Car, HistoryBid, WinnerUser} from "../../../Service/dto/Interfaces";
 import CountdownTimer from "../../../CountdownTimer/CountdownTimer";
 import "../../../CountdownTimer/CountdownTimerStyle.css";
 import {ApiGetCar} from "../../../Service/api-requests/ApiRequests";

@@ -6,7 +6,7 @@ import {Heading} from "@chakra-ui/react";
 import Testimonials from "../Testimonials/Testimonials";
 import CarCompany from "../CarCompany/CarCompany";
 import Footer from "../../Footer/Footer";
-import {ReviewInterface} from "../../Service/interfaces/Interfaces";
+import {ReviewInterface} from "../../Service/dto/Interfaces";
 
 export const Section = styled.section`
   width: 100%;

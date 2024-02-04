@@ -8,7 +8,7 @@ import Card from "../../Card/Card";
 import {allCarsData} from "./AllCarsData";
 import Footer from "../../Footer/Footer";
 import SearchBar from "../../SearchBar/SearchBar";
-import {Car} from "../../Service/interfaces/Interfaces";
+import {Car} from "../../Service/dto/Interfaces";
 
 const Wrapper = styled.div`
   display: grid;
