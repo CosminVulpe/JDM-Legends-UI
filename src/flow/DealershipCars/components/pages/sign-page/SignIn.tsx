@@ -59,22 +59,28 @@ const SignIn: React.FC = () => {
             });
     }
 
+    const colorModeValue = useColorModeValue('gray.50','gray.800');
+    const colorModeValue2 = useColorModeValue('white','gray.700');
+
+    if (userNameLogged !== "") {
+        return <App userNameLogged={userNameLogged}/>;
+    }
+
     return (
         <>
-            {userNameLogged !== "" && <App userNameLogged={userNameLogged}/>}
             <ToastContainer/>
             <Flex
                 minH={'100vh'}
                 align={'center'}
                 justify={'center'}
-                bg={useColorModeValue('gray.50', 'gray.800')}>
+                bg={colorModeValue}>
                 <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
                     <Stack align={'center'}>
                         <Heading fontSize={'4xl'}>Sign in to your account</Heading>
                     </Stack>
                     <Box
                         rounded={'lg'}
-                        bg={useColorModeValue('white', 'gray.700')}
+                        bg={colorModeValue2}
                         boxShadow={'lg'}
                         p={8}>
                         <Stack spacing={4}>
