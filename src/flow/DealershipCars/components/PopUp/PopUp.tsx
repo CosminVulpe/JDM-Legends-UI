@@ -21,7 +21,11 @@ import {
     FormControl,
     Checkbox
 } from "@chakra-ui/react";
-import {ApiGetCar, ApiGetTemporaryUser, ApiPostHistoryBid} from "../Service/api-requests/ApiRequests";
+import {
+    ApiGetCar,
+    ApiGetTemporaryUser,
+    ApiPostHistoryBid, ApiPostHistoryBidCustomer,
+} from "../Service/api-requests/ApiRequests";
 import {Car, HistoryBid, TemporaryCustomerRequest} from "../Service/dto/Interfaces";
 import {successfulNotification, warningNotification} from "../Service/toastify-notification/ToastifyNotification";
 import {ToastContainer} from "react-toastify";
@@ -33,7 +37,6 @@ import {jwtDecode, JwtPayload} from 'jwt-decode';
 
 interface DecodedToken extends JwtPayload {
     username: string;
-    // Add other properties if present in your token payload
 }
 
 
@@ -91,6 +94,10 @@ const PopUp: React.FC<Props> = (props) => {
     }, [id, setHistoryBidList]);
 
     useEffect(() => {
+        setIsTempUserActive(getTemporaryUserInfo() !== null);
+    }, [setIsTempUserActive, getTemporaryUserInfo()]);
+
+    useEffect(() => {
         setDoesUsernameAlreadyExist(tempUsers.map(item => item.userName).includes(formik.values.userName))
     }, [tempUsers, formik.values.userName]);
 
@@ -110,18 +117,29 @@ const PopUp: React.FC<Props> = (props) => {
                 checkInformationStoredTemporarily: isTempUserActive ? checkedCheckBox["YesButton"] : true
             };
             setTemporaryUserInfo(temporaryUser);
-            setIsTempUserActive(true);
         } else {
             temporaryUser = getTemporaryUserInfo();
-            setIsTempUserActive(false);
         }
 
-        ApiPostHistoryBid("bid/" + id, {
-            historyBidRequest: historyBid,
-            temporaryCustomerRequest: temporaryUser as TemporaryCustomerRequest,
-            customerEmail: getUsername()
-        })
-            .then((response: any) => {
+
+        if (!isCustomerLoggedIn) {
+            ApiPostHistoryBid("bid/" + id, {
+                historyBidRequest: historyBid,
+                temporaryCustomerRequest: temporaryUser as TemporaryCustomerRequest,
+            })
+                .then((response: any) => {
+                    if (response.status === 200 || response.status === 201) {
+                        successfulNotification("Bid placed successfully");
+                        ApiGetCar("bid-list/" + id)
+                            .then(res => setHistoryBidList(res.data))
+                            .catch(err => console.error(err))
+                    }
+                })
+                .catch(err => console.error(err));
+        } else {
+            ApiPostHistoryBidCustomer("/bid/customer/"+id,{
+                bidValue: historyBid.bidValue, timeOfTheBid: historyBid.timeOfTheBid, customerEmail:getUsername()
+            }).then((response: any) => {
                 if (response.status === 200 || response.status === 201) {
                     successfulNotification("Bid placed successfully");
                     ApiGetCar("bid-list/" + id)
@@ -129,7 +147,9 @@ const PopUp: React.FC<Props> = (props) => {
                         .catch(err => console.error(err))
                 }
             })
-            .catch(err => console.error(err));
+                .catch(err => console.error(err));
+        }
+
 
         resetCheckedBoxes();
         resetHistoryBid();
@@ -167,10 +187,12 @@ const PopUp: React.FC<Props> = (props) => {
     }
 
     const isSubmitButtonDisable = (): boolean => {
-        if (isTempUserActive) {
-            if ((historyBid.bidValue > BigInt(car.initialPrice)) && (checkedCheckBox["YesButton"] || checkedCheckBox["NoButton"])) {
+        if (!isTempUserActive || isCustomerLoggedIn) {
+            if ((historyBid.bidValue > BigInt(car.initialPrice))) {
                 return false;
             }
+
+
             return true;
         }
 
@@ -230,7 +252,7 @@ const PopUp: React.FC<Props> = (props) => {
                                     />
                                 }
                                 {
-                                    (isTempUserActive || getJwtToken() === null) &&
+                                    (!isTempUserActive && getJwtToken() === null) &&
                                     (
                                         <FormControl>
                                             <FormLabel style={spacingInputStyle}>First name</FormLabel>

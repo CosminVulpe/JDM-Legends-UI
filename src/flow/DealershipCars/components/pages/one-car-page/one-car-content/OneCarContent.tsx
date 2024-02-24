@@ -81,6 +81,7 @@ const OneCarContent: React.FC<Props> = ({cars}) => {
         return timeDiff;
     }
 
+    console.log(historyBidList)
     return (
         <>
             <div>

@@ -1,9 +1,10 @@
 import axios from "axios";
 import {
-    Customer,
+    Customer, HistoryBid,
     HistoryBidTemporaryCustomerRequest,
     ReviewInterface
 } from "../dto/Interfaces";
+import {da} from "date-fns/locale";
 
 export const ApiGetCar = async (endPoint?: string) =>
     await axios.get(process.env.REACT_APP_BACKEND_API_CAR + (endPoint || ""));
@@ -32,9 +33,16 @@ export const ApiGetReview = async (endPoint?: string) =>
     await axios.get(process.env.REACT_APP_BACKEND_API_REVIEW + (endPoint || ""));
 
 
-export const ApiPostTemporaryCustomerValidateEmail = async (email?: string) => {
-    return axios.post(process.env.REACT_APP_USERS_BACKEND_API_TEMPORARY_CUSTOMER + '/checkEmail'
-        , email
+export const ApiPostHistoryBid = async (endPoint: string, data: HistoryBidTemporaryCustomerRequest) => {
+    return await axios.post(process.env.REACT_APP_BACKEND_API_HISTORY_BID + endPoint
+        ,
+        JSON.stringify({
+            ...data,
+            historyBidRequest: {
+                ...data.historyBidRequest,
+                bidValue: data.historyBidRequest.bidValue.toString()
+            }
+        })
         , {
             headers: {
                 "Content-Type": "application/json",
@@ -43,14 +51,13 @@ export const ApiPostTemporaryCustomerValidateEmail = async (email?: string) => {
         });
 }
 
-export const ApiPostHistoryBid = async (endPoint: string, data: HistoryBidTemporaryCustomerRequest) => {
+
+export const ApiPostHistoryBidCustomer = async (endPoint: string, data: HistoryBid) => {
     return await axios.post(process.env.REACT_APP_BACKEND_API_HISTORY_BID + endPoint
-        , JSON.stringify({
+        ,
+        JSON.stringify({
             ...data,
-            historyBidRequest: {
-                ...data.historyBidRequest,
-                bidValue: data.historyBidRequest.bidValue.toString()
-            }
+            bidValue: data.bidValue.toString()
         })
         , {
             headers: {

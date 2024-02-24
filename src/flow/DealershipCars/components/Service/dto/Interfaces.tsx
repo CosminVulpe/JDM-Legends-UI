@@ -27,6 +27,7 @@ export interface HistoryBid {
     userName?: string,
     role?: string,
     checkInformationStoredTemporarily?: boolean,
+    customerEmail?: string | undefined
 }
 
 export interface TemporaryCustomerRequest {
@@ -41,7 +42,6 @@ export interface TemporaryCustomerRequest {
 export interface HistoryBidTemporaryCustomerRequest {
     historyBidRequest: HistoryBid,
     temporaryCustomerRequest: TemporaryCustomerRequest,
-    customerEmail?: string | undefined
 }
 
 export interface WinnerUser {
