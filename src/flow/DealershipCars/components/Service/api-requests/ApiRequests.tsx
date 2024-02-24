@@ -32,6 +32,17 @@ export const ApiGetReview = async (endPoint?: string) =>
     await axios.get(process.env.REACT_APP_BACKEND_API_REVIEW + (endPoint || ""));
 
 
+export const ApiPostTemporaryCustomerValidateEmail = async (email?: string) => {
+    return axios.post(process.env.REACT_APP_USERS_BACKEND_API_TEMPORARY_CUSTOMER + '/checkEmail'
+        , email
+        , {
+            headers: {
+                "Content-Type": "application/json",
+                "accept": "application/json"
+            }
+        });
+}
+
 export const ApiPostHistoryBid = async (endPoint: string, data: HistoryBidTemporaryCustomerRequest) => {
     return await axios.post(process.env.REACT_APP_BACKEND_API_HISTORY_BID + endPoint
         , JSON.stringify({
@@ -61,8 +72,18 @@ export const ApiPostRegisterCustomer = async (data: Customer | string, endPoint?
     );
 }
 
+export const ApiPostCustomerValidateEmail = async (email?: string) => {
+    return await axios.post(process.env.REACT_APP_USERS_BACKEND_API_CUSTOMER + "/checkEmail"
+        , email, {
+            headers: {
+                "Content-Type": "application/json",
+                "accept": "application/json"
+            }
+        })
+}
+
 export const ApiGetTemporaryUser = async (endPoint?: string) =>
-    await axios.get(process.env.REACT_APP_USERS_BACKEND_API_USERS + (endPoint || ""));
+    await axios.get(process.env.REACT_APP_USERS_BACKEND_API_TEMPORARY_CUSTOMER + (endPoint || ""));
 
 
 export const ApiGetSignedCustomerName = async (data: { emailAddress: string, pwd: string }, endPoint?: string) =>

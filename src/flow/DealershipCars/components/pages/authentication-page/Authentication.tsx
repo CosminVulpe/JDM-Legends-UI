@@ -13,46 +13,70 @@ import {
     useColorModeValue,
     Link,
 } from '@chakra-ui/react'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {ViewIcon, ViewOffIcon} from '@chakra-ui/icons';
-import {Customer} from "../../Service/dto/Interfaces";
-import {ApiPostRegisterCustomer} from "../../Service/api-requests/ApiRequests";
+import {Customer, ReviewInterface} from "../../Service/dto/Interfaces";
+import {
+    ApiPostCustomerValidateEmail,
+    ApiPostRegisterCustomer,
+} from "../../Service/api-requests/ApiRequests";
 import {successfulNotification, warningNotification} from "../../Service/toastify-notification/ToastifyNotification";
 import {ToastContainer} from "react-toastify";
 import {AxiosResponse} from "axios";
 import {useNavigate} from "react-router-dom";
+import {REGEX_VALID_EMAIL_ADDRESS} from "../../PopUp/PopUp";
+import AlertNotification from "../../AlertNotification/AlerNotification";
+import {useFormik} from "formik";
+
+
+const domains = [
+    ".com",
+    ".org",
+    ".net",
+    ".edu",
+    ".gov",
+    ".mil",
+    ".info",
+    ".biz",
+    ".co.uk",
+    ".ca",
+    ".de"
+];
 
 const Authentication: React.FC = () => {
     const navigate = useNavigate();
 
     const [showPassword, setShowPassword] = useState(false);
-    const [customerInfo, setCustomerInfo] = useState<Customer>({
-        fullName: "",
-        userName: "",
-        emailAddress: "",
-        pwd: "",
-        phoneNumber: ""
-    });
+    const [isEmailAlreadyExisting, setIsEmailAlreadyExisting] = useState(false);
 
-    const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCustomerInfo(prevState => ({
-            ...prevState,
-            [event.target.name]: event.target.value
-        }))
-    }
-
-    const cleanFields = (): void => {
-        setCustomerInfo(() => ({
+    const formik = useFormik<Customer>({
+        initialValues: {
             fullName: "",
             userName: "",
             emailAddress: "",
             pwd: "",
             phoneNumber: ""
-        }))
+        },
+        onSubmit: () => undefined
+    })
+
+    useEffect(() => {
+        if (formik.values.emailAddress !== "" &&
+            domains.some(domain => formik.values.emailAddress.endsWith(domain))) {
+
+            ApiPostCustomerValidateEmail(formik.values.emailAddress)
+                .then((res: any) => setIsEmailAlreadyExisting(res.data))
+                .catch((err) => console.error(err))
+        }
+    }, [formik.values.emailAddress]);
+
+    const cleanFields = (): void => {
+        formik.resetForm();
+        formik.setTouched({});
     }
 
     const saveCustomerInfo = () => {
-        ApiPostRegisterCustomer(customerInfo)
+        ApiPostRegisterCustomer(formik.values)
             .then((res: AxiosResponse<any, any>) => {
                 if (res.status === 201) {
                     successfulNotification("Sign up successfully");
@@ -62,6 +86,24 @@ const Authentication: React.FC = () => {
             .catch(err => warningNotification((err.status === 409) ?
                 "Please use another email, user already in the database"
                 : "Something went wrong while trying to sign up"));
+    }
+
+    const computeErrorEmail = () => {
+        if (isEmailAlreadyExisting) {
+            return <AlertNotification
+                alertType={"error"}
+                textAlert={"Email Address already exists"}
+            />
+        }
+
+        if ((formik.values.emailAddress !== "") && domains.some(domain => formik.values.emailAddress.endsWith(domain))) {
+            if (!REGEX_VALID_EMAIL_ADDRESS.test(formik.values.emailAddress)) {
+                return <AlertNotification
+                    alertType={"error"}
+                    textAlert={"Email Address not valid"}
+                />
+            }
+        }
     }
 
     return (
@@ -86,14 +128,17 @@ const Authentication: React.FC = () => {
                         bg={useColorModeValue('white', 'gray.700')}
                         boxShadow={'lg'}
                         p={9}>
+                        {/*<Form onSubmit={formik.handleSubmit}>*/}
                         <Stack spacing={4}>
+
                             <Box>
                                 <FormControl id="fullName" isRequired>
                                     <FormLabel>Full Name</FormLabel>
                                     <Input type="text"
                                            name={"fullName"}
-                                           onChange={handleOnChange}
-                                           value={customerInfo.fullName}/>
+                                           onChange={formik.handleChange}
+                                           onBlur={formik.handleBlur}
+                                           value={formik.values.fullName}/>
                                 </FormControl>
                             </Box>
 
@@ -101,24 +146,28 @@ const Authentication: React.FC = () => {
                                 <FormLabel>Email address</FormLabel>
                                 <Input type="email"
                                        name={"emailAddress"}
-                                       onChange={handleOnChange}
-                                       value={customerInfo.emailAddress}/>
+                                       onChange={formik.handleChange}
+                                       onBlur={formik.handleBlur}
+                                       value={formik.values.emailAddress}/>
+                                {formik.touched.emailAddress && computeErrorEmail()}
                             </FormControl>
 
                             <FormControl id="userName" isRequired>
                                 <FormLabel>User Name</FormLabel>
                                 <Input type="text"
                                        name={"userName"}
-                                       onChange={handleOnChange}
-                                       value={customerInfo.userName}/>
+                                       onChange={formik.handleChange}
+                                       onBlur={formik.handleBlur}
+                                       value={formik.values.userName}/>
                             </FormControl>
 
                             <FormControl id="phoneNumber" isRequired>
                                 <FormLabel>Phone Number</FormLabel>
                                 <Input type="number"
                                        name={"phoneNumber"}
-                                       onChange={handleOnChange}
-                                       value={customerInfo.phoneNumber}/>
+                                       onChange={formik.handleChange}
+                                       onBlur={formik.handleBlur}
+                                       value={formik.values.phoneNumber}/>
                             </FormControl>
 
                             <FormControl id="password" isRequired>
@@ -126,7 +175,9 @@ const Authentication: React.FC = () => {
                                 <InputGroup>
                                     <Input type={showPassword ? 'text' : 'password'}
                                            name={"pwd"}
-                                           onChange={handleOnChange} value={customerInfo.pwd}/>
+                                           onChange={formik.handleChange}
+                                           onBlur={formik.handleBlur}
+                                           value={formik.values.pwd}/>
                                     <InputRightElement h={'full'}>
                                         <Button
                                             variant={'ghost'}
@@ -159,6 +210,7 @@ const Authentication: React.FC = () => {
                                 </Text>
                             </Stack>
                         </Stack>
+                        {/*</Form>*/}
                     </Box>
                 </Stack>
             </Flex>

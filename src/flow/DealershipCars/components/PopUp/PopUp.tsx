@@ -27,7 +27,15 @@ import {successfulNotification, warningNotification} from "../Service/toastify-n
 import {ToastContainer} from "react-toastify";
 import {useFormik} from "formik";
 import AlertNotification from "../AlertNotification/AlerNotification";
-import {getTemporaryUserInfo, isTempUserActive, setTemporaryUserInfo} from "../Service/session-storage/SessionStorage";
+import {getJwtToken, getTemporaryUserInfo, setTemporaryUserInfo} from "../Service/session-storage/SessionStorage";
+import {jwtDecode, JwtPayload} from 'jwt-decode';
+
+
+interface DecodedToken extends JwtPayload {
+    username: string;
+    // Add other properties if present in your token payload
+}
+
 
 interface Props {
     id: number,
@@ -49,7 +57,7 @@ const spacingInputStyle = {
 };
 
 const REGEX_VALIDATE_NAME = /^[a-zA-Z ]{2,30}$/;
-const REGEX_VALID_EMAIL_ADDRESS = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+export const REGEX_VALID_EMAIL_ADDRESS = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 const PopUp: React.FC<Props> = (props) => {
 
@@ -62,6 +70,8 @@ const PopUp: React.FC<Props> = (props) => {
     });
     const [tempUsers, setTempUsers] = useState<TemporaryCustomerRequest[]>([]);
     const [doesUsernameAlreadyExist, setDoesUsernameAlreadyExist] = useState<boolean>(false);
+    const [isTempUserActive, setIsTempUserActive] = useState<boolean>(false);
+    const [isCustomerLoggedIn, setIsCustomerLoggedIn] = useState<boolean>(getJwtToken() !== null);
 
     const formik = useFormik({
         initialValues: {
@@ -92,21 +102,24 @@ const PopUp: React.FC<Props> = (props) => {
         onClose();
 
         let temporaryUser;
-        if (isTempUserActive){
-             temporaryUser = {
+        if (getTemporaryUserInfo() === null) {
+            temporaryUser = {
                 fullName: formik.values.firstName.concat(" ").concat(formik.values.lastName),
                 userName: formik.values.userName,
                 emailAddress: formik.values.emailAddress,
                 checkInformationStoredTemporarily: isTempUserActive ? checkedCheckBox["YesButton"] : true
             };
             setTemporaryUserInfo(temporaryUser);
+            setIsTempUserActive(true);
         } else {
             temporaryUser = getTemporaryUserInfo();
+            setIsTempUserActive(false);
         }
 
         ApiPostHistoryBid("bid/" + id, {
             historyBidRequest: historyBid,
-            temporaryCustomerRequest: temporaryUser as TemporaryCustomerRequest
+            temporaryCustomerRequest: temporaryUser as TemporaryCustomerRequest,
+            customerEmail: getUsername()
         })
             .then((response: any) => {
                 if (response.status === 200 || response.status === 201) {
@@ -167,6 +180,18 @@ const PopUp: React.FC<Props> = (props) => {
     const isInputValid = (text: string): boolean => !(REGEX_VALIDATE_NAME.test(text));
     const isPriceLowerThanCarPrice: boolean = historyBid.bidValue < BigInt(car.initialPrice);
 
+    const getUsername = (): string | undefined => {
+        if (isCustomerLoggedIn) {
+            try {
+                let decode = jwtDecode<DecodedToken>(getJwtToken() as string);
+                const {username} = decode;
+                return btoa(username);
+            } catch (error) {
+                console.error("Error while decoding: ", error);
+            }
+        }
+    }
+
     return (
         <>
             <ToastContainer/>
@@ -205,7 +230,7 @@ const PopUp: React.FC<Props> = (props) => {
                                     />
                                 }
                                 {
-                                    isTempUserActive &&
+                                    (isTempUserActive || getJwtToken() === null) &&
                                     (
                                         <FormControl>
                                             <FormLabel style={spacingInputStyle}>First name</FormLabel>

@@ -40,7 +40,8 @@ export interface TemporaryCustomerRequest {
 
 export interface HistoryBidTemporaryCustomerRequest {
     historyBidRequest: HistoryBid,
-    temporaryCustomerRequest: TemporaryCustomerRequest
+    temporaryCustomerRequest: TemporaryCustomerRequest,
+    customerEmail?: string | undefined
 }
 
 export interface WinnerUser {

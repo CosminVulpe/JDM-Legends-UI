@@ -24,5 +24,3 @@ export const getJwtToken = (): string | null => {
 export const logOutCustomer = (): void => {
     sessionStorage.removeItem(KEY_JWT_TOKEN);
 }
-
-export const isTempUserActive: boolean = getTemporaryUserInfo() === null;
