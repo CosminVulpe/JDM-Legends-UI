@@ -4,10 +4,17 @@ import {
     HistoryBidTemporaryCustomerRequest,
     ReviewInterface
 } from "../dto/Interfaces";
-import {da} from "date-fns/locale";
+import {getJwtToken} from "../session-storage/SessionStorage";
 
-export const ApiGetCar = async (endPoint?: string) =>
-    await axios.get(process.env.REACT_APP_BACKEND_API_CAR + (endPoint || ""));
+export const ApiGetCar = async (endPoint?: string) => {
+    if (getJwtToken() === null) {
+        return await axios.get(process.env.REACT_APP_BACKEND_API_CAR + (endPoint || ""));
+    }
+
+    return await axios.get(process.env.REACT_APP_BACKEND_API_CAR + (endPoint || ""), {
+        headers: {'Authorization': getJwtToken()}
+    });
+}
 
 
 export const getCancelToken = (): any => {

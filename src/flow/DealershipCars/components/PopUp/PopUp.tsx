@@ -142,7 +142,7 @@ const PopUp: React.FC<Props> = (props) => {
             }).then((response: any) => {
                 if (response.status === 200 || response.status === 201) {
                     successfulNotification("Bid placed successfully");
-                    ApiGetCar("bid-list/" + id)
+                    ApiGetCar("bid-list-customer/" + id)
                         .then(res => setHistoryBidList(res.data))
                         .catch(err => console.error(err))
                 }

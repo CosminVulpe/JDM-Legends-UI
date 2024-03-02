@@ -81,7 +81,6 @@ const OneCarContent: React.FC<Props> = ({cars}) => {
         return timeDiff;
     }
 
-    console.log(historyBidList)
     return (
         <>
             <div>
@@ -165,7 +164,12 @@ const OneCarContent: React.FC<Props> = ({cars}) => {
                                                     {historyBidList.map((bid) =>
                                                         <li className='bid_list' key={bid.id}>
                                                             Bid by:
-                                                            <span>{bid.checkInformationStoredTemporarily ? bid.userName : bid.role}</span>
+
+                                                            {bid.checkInformationStoredTemporarily !== undefined ?
+                                                                <span>{bid.checkInformationStoredTemporarily ? bid.userName : bid.role}</span>
+                                                                :
+                                                                <span>{bid.userName}</span>
+                                                            }
                                                             <span>${bid.bidValue.toLocaleString()}</span>
                                                         </li>
                                                     )}
